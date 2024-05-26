@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Streaming</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Video Streaming</h1>
+    <img id="video-stream" src="" alt="Video Stream" width="640" height="480">
+    <script type="text/javascript">
+        var socket = io.connect('http://localhost:5000');
+
+        socket.on('connect', function() {
+            console.log('Socket connected');
+            startProcess();
+        });
+
+        socket.on('frame', function(data) {
+            document.getElementById('video-stream').src = 'data:image/jpeg;base64,' + data.data;
+        });
+
+        function startProcess() {
+            socket.emit('process', {
+                url: 'rtsp://admin:141291@octateste.ddns-intelbras.com.br:554/cam/realmonitor?channel=4&subtype=0',
+                max_frames: 301,
+                process_each: 90,
+                yield_each: 1,
+                imgsz: 640,
+                conf: 0.001,
+                classes: '20',
+                max_det: null,
+                fill_results: 'frame-by-frame',
+                filter_results: 'processed-only',
+                yield_type: 'images'
+            });
+        }
+    </script>
+</body>
+</html>

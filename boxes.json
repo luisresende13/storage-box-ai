@@ -1,0 +1,1 @@
+[{"fid": 450, "timestamp": "2024-05-25 01:58:00", "fps_roll": 27.28, "fps": 30.27, "n_objects": 1, "objects": [{"class_id": 20, "class_name": "Storage box", "confidence": 0.00023799198970664293, "bbox": [1039, 1, 1092, 31], "pixel_cm_ratio": null, "has_dimensions": false, "width": null, "height": null, "area_cm2": null}], "_id": "3b532435-1245-4699-8200-c81de4493757"}]

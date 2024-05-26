@@ -1,0 +1,12 @@
+ultralytics
+gitpython
+pandas
+requests
+Flask
+flask_cors
+opencv-python
+Pillow
+torch
+# torchvision
+Flask-SocketIO
+gevent-websocket
