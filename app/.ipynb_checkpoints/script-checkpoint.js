@@ -8,7 +8,7 @@ let processingSleepSeconds = 5;
 let processEach = 30;
 let streamFps = 3;
 let cameraFps = 30;
-let confidence = 0.0001
+let confidence = 0.01
 let getHistoryFps = 4
 let getHistorySeconds = 1 / getHistoryFps
 

@@ -11,3 +11,6 @@ pip install -r requirements.txt
 
 # Start application
 python main.py
+
+# Open the web application in the browser
+# ./app/index.html

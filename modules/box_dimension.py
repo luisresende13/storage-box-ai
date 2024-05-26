@@ -40,7 +40,8 @@ def run_storage_box_dimension_camera(url, model, max_frames=30, process_each=30,
     t = time.time()
     fps = 0.00
     start_time = time.time()
-    
+    frame_time = time.time()
+
     corners = None
     results = []
     objects = []
@@ -162,11 +163,17 @@ def run_storage_box_dimension_camera(url, model, max_frames=30, process_each=30,
                     
                     if not ret:
                         raise Exception(f'ERROR DECODING FRAME | FID: {fid} | URL: {url}')
-            
+                    
                     # Convert the JPEG image to bytes and yield it
                     yield (b'--frame\r\n'
                            b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n\r\n')
-                    
+
+                    # while time.time() - frame_time < yield_each / 30:
+                    #     # Wait to maintain the desired fps
+                    #     time.sleep(yield_each / 30 / 15)
+
+                    # frame_time = time.time()
+
                     # cv2.imshow("Image", img)
                     # key = cv2.waitKey(1)
                     # if key == 27:
