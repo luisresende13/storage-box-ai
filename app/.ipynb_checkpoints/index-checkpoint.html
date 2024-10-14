@@ -15,28 +15,72 @@
     <div class="container-fluid mt-4">
         <div class="row">
             <div class="col-md-6">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        Camera Stream
-                    </div>
-                    <div class="card-body text-center">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" id="camera-url" placeholder="Enter Camera URL" value="rtsp://admin:141291@octateste.ddns-intelbras.com.br:554/cam/realmonitor?channel=4&subtype=0">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" id="connect-btn">Connect</button>
-                                <button class="btn btn-danger" id="disconnect-btn">Disconnect</button>
-                            </div>
-                        </div>                        
-                        <div id="camera-stream" class="border" style="height: 360px; background-color: #e9ecef;">
-                            <img id="camera-feed" width="100%">
-                        </div>
-                        <div class="mt-3">
-                            <button class="btn btn-success" id="detect-btn">Start Detection</button>
-                            <button class="btn btn-danger" id="stop-detect-btn">Stop Detection</button>
-                        </div>
+<div class="card mb-4">
+    <div class="card-header">
+        Camera Stream
+    </div>
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="camera-url" placeholder="Enter Camera URL" value="rtsp://admin:141291@octateste.ddns-intelbras.com.br:554/cam/realmonitor?channel=4&subtype=0">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" id="connect-btn">Connect</button>
+                        <button class="btn btn-danger" id="disconnect-btn">Disconnect</button>
                     </div>
                 </div>
-                
+            </div>
+        </div>
+        <div id="camera-stream" class="border mb-3" style="height: 360px; background-color: #e9ecef;">
+            <img id="camera-feed" width="100%">
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="marker-size-label">Marker Size</span>
+                    </div>
+                    <input type="text" class="form-control" id="marker-size" placeholder="Enter Marker Size" aria-label="Marker Size" aria-describedby="marker-size-label">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" id="marker-btn">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="confidence-label">Confidence</span>
+                    </div>
+                    <input type="text" class="form-control" id="confidence" placeholder="Enter Confidence" aria-label="Confidence" aria-describedby="confidence-label">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" id="confidence-btn">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="seconds-label">Seconds</span>
+                    </div>
+                    <input type="text" class="form-control" id="seconds" placeholder="Enter Seconds" aria-label="Seconds" aria-describedby="seconds-label">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" id="seconds-btn">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <button class="btn btn-success" id="detect-btn">Start Detection</button>
+            <button class="btn btn-danger" id="stop-detect-btn">Stop Detection</button>
+        </div>
+    </div>
+</div>
+
+
                 <div class="card">
                     <div class="card-header">
                         Camera Information

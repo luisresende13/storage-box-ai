@@ -94,11 +94,12 @@ def process():
     max_det = args.get('max_det', None)
     fill_results = args.get('fill_results', 'frame-by-frame')
     filter_results = args.get('filter_results', 'processed-only')
+    marker_size = args.get('marker_size', None)
 
     if url is None:
         return 'Missing required parameter: `url`', 400
 
-    params = ['url', 'max_frames', 'process_each', 'yield_each', 'yield_type', 'imgsz', 'conf', 'classes', 'max_det', 'fill_results', 'filter_results']
+    params = ['url', 'max_frames', 'process_each', 'yield_each', 'yield_type', 'imgsz', 'conf', 'classes', 'max_det', 'fill_results', 'filter_results', 'marker_size']
 
     url_params = {}
     for key in args.keys():
@@ -122,7 +123,10 @@ def process():
         
     if yield_each is not None:
         yield_each = int(yield_each)
-    
+
+    if marker_size is not None:
+        marker_size = int(marker_size)
+
     # Print the parameters using an f-string
     print(f'\nPROCESSING STARTED | URL: {url} | MAX_FRAMES: {max_frames} | PROCESS_EACH: {process_each} | YIELD_EACH: {yield_each} | IMGSZ: {imgsz} | CONF: {conf} | CLASSES: {classes} | MAX_DET: {max_det} | FILL_RESULTS: {fill_results} | FILTER_RESULTS: {filter_results}')
 
@@ -135,7 +139,7 @@ def process():
     start = time()
 
     # Run the function and get results
-    results = run_storage_box_dimension_camera(url, model, max_frames, process_each, yield_each, predict_params, fill_results, filter_results, yield_type)
+    results = run_storage_box_dimension_camera(url, model, max_frames, process_each, yield_each, predict_params, fill_results, filter_results, yield_type, marker_size)
 
     if yield_type == 'results':
         # Iterate the generator

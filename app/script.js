@@ -3,16 +3,16 @@ let STORAGE_BOX_AI_API_URL = 'http://localhost:5000';
 // const db = 'octacity';
 // const coll = 'boxes';
 
-let processingSeconds = 20;
-let processingSleepSeconds = 5;
+let processingSeconds = 15;
+let processingSleepSeconds = 3;
 let processEach = 30;
 let streamFps = 3;
 let cameraFps = 30;
-let confidence = 0.01
+let confidence = 0.04
 let getHistoryFps = 4
 let getHistorySeconds = 1 / getHistoryFps
 
-const processingFrames = (processingSeconds - processingSleepSeconds) * cameraFps + 1;
+let processingFrames = (processingSeconds - processingSleepSeconds) * cameraFps + 1;
 let streamEach = parseInt(cameraFps / streamFps);
 
 let controller = new AbortController()
@@ -21,11 +21,23 @@ let controller = new AbortController()
 function startProcessing() {
 
     const cameraUrl = $('#camera-url').val();
+    const markerSize = $('#marker-size').val();
+    const inputConfidence = $('#confidence').val();
+    const seconds = $('#seconds').val();
+    if (seconds) {
+        processingSeconds = parseInt(seconds)
+        processingFrames = (processingSeconds - processingSleepSeconds) * cameraFps + 1
+    }
+    
     const { baseUrl, params: urlParams } = parseUrl(cameraUrl);
 
     console.log('baseUrl:', baseUrl)
     console.log('urlParams:', urlParams)
-    
+    console.log('markerSize:', markerSize)
+    console.log('inputConfidence:', inputConfidence)
+    console.log('processingSeconds:', processingSeconds)
+    console.log('processingFrames:', processingFrames)
+
     const params = {
         url: baseUrl,
         max_frames: processingFrames,
@@ -34,6 +46,14 @@ function startProcessing() {
         yield_type: 'results',
         fill_results: 'frame-by-frame'
     };
+
+    if (markerSize) {
+        params['marker_size'] = markerSize
+    }
+
+    if (inputConfidence) {
+        params['conf'] = inputConfidence
+    }
 
     for (const [key, value] of Object.entries(urlParams)) {
         params[key] = value;
@@ -96,7 +116,7 @@ function parseUrl(url) {
     const match = url.match(urlPattern);
     if (!match) {
         console.error('Invalid URL');
-        return { baseUrl: null, params: {} };
+        return { baseUrl: url, params: {} };
     }
     const baseUrl = match[1] + match[2];
     const queryString = match[3] ? match[3].substring(1) : '';
@@ -126,7 +146,7 @@ $(document).ready(function() {
     let processingInterval = null;
     let markerInterval = null;
 
-    connectCamera(resetConnectionTime=true)
+    // connectCamera(resetConnectionTime=true)
 
     $('#connect-btn').click(function() {
         if (detectionRunning) {
@@ -170,10 +190,14 @@ $(document).ready(function() {
     function connectCamera(resetConnectionTime=true) {
 
         const cameraUrl = $('#camera-url').val();
+        const markerSize = $('#marker-size').val();
+        const inputConfidence = $('#confidence').val();
         const { baseUrl, params: urlParams } = parseUrl(cameraUrl);
-
+    
         console.log('baseUrl:', baseUrl)
         console.log('urlParams:', urlParams)
+        console.log('markerSize:', markerSize)
+        console.log('inputConfidence:', inputConfidence)
             
         const params = {
             url: baseUrl,
@@ -183,6 +207,14 @@ $(document).ready(function() {
             yield_type: 'images',
             fill_results: 'none'
         };
+
+        if (markerSize) {
+            params['marker_size'] = markerSize
+        }
+
+        if (inputConfidence) {
+            params['conf'] = inputConfidence
+        }
 
         for (const [key, value] of Object.entries(urlParams)) {
             params[key] = value;
@@ -211,11 +243,15 @@ $(document).ready(function() {
         startProcessing();
 
         const cameraUrl = $('#camera-url').val();
+        const markerSize = $('#marker-size').val();
+        const inputConfidence = $('#confidence').val();
         const { baseUrl, params: urlParams } = parseUrl(cameraUrl);
 
         console.log('baseUrl:', baseUrl)
         console.log('urlParams:', urlParams)
-            
+        console.log('markerSize:', markerSize)
+        console.log('inputConfidence:', inputConfidence)
+        
         const params = {
             url: baseUrl,
             process_each: processEach,
@@ -224,6 +260,14 @@ $(document).ready(function() {
             yield_type: 'images',
             fill_results: 'frame-by-frame'
         };
+
+        if (markerSize) {
+            params['marker_size'] = markerSize
+        }
+
+        if (inputConfidence) {
+            params['conf'] = inputConfidence
+        }
 
         for (const [key, value] of Object.entries(urlParams)) {
             params[key] = value;

@@ -5,21 +5,40 @@ from datetime import datetime
 from modules.yolov5_wrap import YOLOV5Wrap
 import traceback
 
+def overlay_images(image1, image2, width):
+    # Resize the second image to the specified width while maintaining aspect ratio
+    aspect_ratio = image2.shape[1] / image2.shape[0]
+    new_height = int(width / aspect_ratio)
+    resized_image2 = cv2.resize(image2, (width, new_height), interpolation=cv2.INTER_AREA)
+
+    # Calculate the position to place the resized second image
+    # x_offset = image1.shape[1] - width - 15
+    y_offset = image1.shape[0] - new_height - 15
+    x_offset = 10
+    # y_offset = 10
+
+    # Ensure the resized image fits within the first image
+    if x_offset < 0 or y_offset + resized_image2.shape[0] > image1.shape[0]:
+        raise ValueError("The resized image2 does not fit within image1 with the specified width.")
+
+    # Overlay the resized image on top of the first image
+    image1[y_offset:y_offset + resized_image2.shape[0], x_offset:x_offset + resized_image2.shape[1]] = resized_image2
+
+    return image1
+
+# # Example usage:
+# image1 = cv2.imread('../marker.jpeg')
+# image2 = cv2.imread('../marker.jpeg')
+# result = overlay_images(image1, image2, 100)
+# cv2.imwrite('../result.jpg', result)
+
+
 # from object_detector import *
 
-# def increase_contrast(frame, alpha=1.5, beta=50):
-#     """
-#     Increase the contrast of the frame.
-#     :param frame: input frame
-#     :param alpha: contrast control (1.0-3.0)
-#     :param beta: brightness control (0-100)
-#     :return: frame with increased contrast
-#     """
-#     adjusted = cv2.convertScaleAbs(frame, alpha=alpha)
-#     return adjusted
+marker = cv2.imread('marker.jpeg')
 
 
-def run_storage_box_dimension_camera(url, model, max_frames=30, process_each=30, yield_each=10, predict_params=dict(imgsz=640, conf=0.01, classes=[20], max_det=None), fill_results='frame-by-frame', filter_results='processed-only', yield_type='images'):
+def run_storage_box_dimension_camera(url, model, max_frames=30, process_each=30, yield_each=10, predict_params=dict(imgsz=640, conf=0.01, classes=[20], max_det=None), fill_results='frame-by-frame', filter_results='processed-only', yield_type='images', marker_size=None):
 
     # Load Aruco detector
     parameters = cv2.aruco.DetectorParameters()
@@ -67,7 +86,13 @@ def run_storage_box_dimension_camera(url, model, max_frames=30, process_each=30,
             # Get Aruco marker
             if fill_results == 'none':
                 corners = None
+
+            if marker_size is not None:
+                if (yield_type == 'results' and fid % process_each == 0) or (yield_type == 'images' and fid % yield_each == 0):
+                    img = overlay_images(img, marker, marker_size)
+            
             if fid % process_each == 0:
+
                 corners, _, _ = aruco_detector.detectMarkers(img)
             
             pixel_cm_ratio = None
@@ -163,16 +188,17 @@ def run_storage_box_dimension_camera(url, model, max_frames=30, process_each=30,
                     
                     if not ret:
                         raise Exception(f'ERROR DECODING FRAME | FID: {fid} | URL: {url}')
+
+                    # while time.time() - frame_time < yield_each / 30:
+                    #     # Wait to maintain the desired fps
+                    #     time.sleep(yield_each / 30 / 15)
                     
                     # Convert the JPEG image to bytes and yield it
                     yield (b'--frame\r\n'
                            b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n\r\n')
 
-                    # while time.time() - frame_time < yield_each / 30:
-                    #     # Wait to maintain the desired fps
-                    #     time.sleep(yield_each / 30 / 15)
 
-                    # frame_time = time.time()
+                    frame_time = time.time()
 
                     # cv2.imshow("Image", img)
                     # key = cv2.waitKey(1)
